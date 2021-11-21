@@ -1,0 +1,18 @@
+{
+  "name": "lichtschranke_mock_server",
+  "productName": "Lichtschranke Mock Server",
+  "version": "1.0.0",
+  "author": {
+    "name": "Frank Stierle",
+    "email": "frank.stierle@mway.io",
+    "url": "https://www.mway.io"
+  },
+  "copyright": "© 2021, Dekra GmbH",
+  "private": true,
+  "main": "server.js",
+  "dependencies": {
+    "dateformat": "^4.5.1",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {}
+}

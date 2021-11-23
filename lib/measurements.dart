@@ -1,13 +1,25 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'settings.dart';
-part 'measurements.g.dart';
-
-@JsonSerializable(explicitToJson: true)
+import 'speeds.dart';
 class Measurements {
   Settings settings;
+  List<Speeds> speeds;
 
-  Measurements(this.settings);
+  Measurements(this.settings, this.speeds);
 
-  factory Measurements.fromJson(Map<String, dynamic> json) => _$MeasurementsFromJson(json);
-  Map<String, dynamic> toJson() => _$MeasurementsToJson(this);
+  factory Measurements.fromJson(dynamic json) {
+    if (json['speeds'] != null) {
+      var measurementObjsJson = json['speeds'] as List;
+      List<Speeds> _speeds = measurementObjsJson.map((measurementJson) => Speeds.fromJson(measurementJson)).toList();
+
+      return Measurements(
+        Settings.fromJson(json['settings']),
+        _speeds
+      );
+    } else {
+      return Measurements(
+        Settings.fromJson(json['settings']),
+        []
+      );
+    }
+  }
 }

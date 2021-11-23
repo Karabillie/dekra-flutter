@@ -1,13 +1,8 @@
 
 
-import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:validators/validators.dart';
-
 import 'http-requests.dart';
-part 'settings.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class Settings {
   double dir = 0;
   int edge = 0;
@@ -20,18 +15,18 @@ class Settings {
 
   Settings(this.dir, this.edge, this.unit, this.mode, this.calibration, this.name, this.date, this.battery);
 
-  factory Settings.fromJson(Map<String, dynamic> json) =>
-      _$SettingsFromJson(json);
-  Map<String, dynamic> toJson() => _$SettingsToJson(this);
+  factory Settings.fromJson(dynamic json) {
+    return Settings(json['dir'] as double, json['edge'] as int, json['unit'] as String, json['mode'] as int, json['calibration'] as int, json['name'] as String, json['date'] as double, json['battery'] as double);
+  }
 }
 
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({Key key}) : super(key: key);
   @override
-  MyHomePage createState() => MyHomePage();
+  SettingsPage createState() => SettingsPage();
 }
 
-class MyHomePage extends State<SettingsWidget> {
+class SettingsPage extends State<SettingsWidget> {
   final HttpService httpService = HttpService();
 
   final addressController = TextEditingController(text: 'http://localhost:3000/');
@@ -39,7 +34,7 @@ class MyHomePage extends State<SettingsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: FutureBuilder(
-          future: httpService.getSpeedMeasurements(),
+          future: httpService.getSpeedsSettings(),
           builder: (BuildContext context, AsyncSnapshot<Settings> snapshot) {
             Settings settings = snapshot.data;
             return Column(

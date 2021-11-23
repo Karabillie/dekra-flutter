@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/settings.dart';
+import 'package:flutter_complete_guide/speeds.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized(); //all widgets are rendered here
@@ -36,7 +37,7 @@ class HomePageWidget extends StatelessWidget {
         ),
         body: const TabBarView(
           children: [
-            SettingsWidget(),
+            SpeedsWidget(),
             SettingsWidget(),
           ],
         ),

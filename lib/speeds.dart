@@ -1,7 +1,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/subscriber_chart.dart';
-import 'package:flutter_complete_guide/subscriber_series.dart';
+import 'package:flutter_complete_guide/speeds_chart.dart';
 import 'dart:async';
 import 'database.dart';
 import 'http-requests.dart';
@@ -40,7 +40,8 @@ class SpeedsPage extends State<SpeedsWidget> {
   final HttpService httpService = HttpService();
   DatabaseService databaseService = DatabaseService();
   List<Speeds> speeds = [];
-  List<SpeedChart> speedValues = [];
+  Map<String, SpeedChart> speedValues = {};
+  var idCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -56,17 +57,20 @@ class SpeedsPage extends State<SpeedsWidget> {
               }
               if (snapshot.data != []) {
                 for (var i = 0; i < speedsSnapshot?.length; i++) {
+                  if (speedValues.length == 6) {
+                    speedValues = {};
+                  }
                   speeds.add(speedsSnapshot[i]);
-                  speedValues?.add(SpeedChart(
-                      idCount: i.toString(),
-                      speed: speedsSnapshot[i].speed,
-                      barColor: charts.ColorUtil.fromDartColor(Colors.green)));
+                  speedValues.putIfAbsent(
+                      idCount.toString(),
+                      () => SpeedChart(
+                          idCount.toString(),
+                          speedsSnapshot[i].speed,
+                          charts.ColorUtil.fromDartColor(Colors.green)));
+                  idCount = idCount + 1;
+                  ;
                 }
               }
-
-              print('speedValues');
-              print(speedValues);
-              
               return Container(
                 width: MediaQuery.of(context).size.width,
                 alignment: Alignment.center,

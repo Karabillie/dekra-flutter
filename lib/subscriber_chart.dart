@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:flutter_complete_guide/subscriber_series.dart';
+import 'package:flutter_complete_guide/speeds_chart.dart';
 
 class SubscriberChart extends StatelessWidget {
-  final List<SpeedChart> data;
+  final Map<String, SpeedChart> data;
 
   SubscriberChart({@required this.data});
 
@@ -12,7 +12,7 @@ class SubscriberChart extends StatelessWidget {
     List<charts.Series<SpeedChart, String>> series = [
       charts.Series(
         id: "Subscribers",
-        data: data,
+        data: data.values.toList(),
         domainFn: (SpeedChart series, _) => series.idCount,
         measureFn: (SpeedChart series, _) => series.speed,
         colorFn: (SpeedChart series, _) => series.barColor,

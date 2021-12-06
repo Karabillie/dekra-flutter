@@ -3,9 +3,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'measurements.dart';
 import 'speeds.dart';
-
+import 'dart:async';
 class HttpService {
   String url = "http://localhost:3000/";
+  final StreamController<List<Speeds>> _speedController = StreamController<List<Speeds>>();
+  Stream<List<Speeds>> get speedController => _speedController.stream;
 
   Future<Settings> getSpeedsSettings() async {
     var response = await http.get(Uri.parse(url + 'time'));
@@ -21,7 +23,7 @@ class HttpService {
     }
   }
 
-  Future<List<Speeds>> getSpeeds() async {
+  Future getSpeeds() async {
     var response = await http.get(Uri.parse(url + 'time'));
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -34,6 +36,10 @@ class HttpService {
       // then throw an exception.
       throw Exception('Failed to load settings');
     }
+  }
+
+  Stream<List<Speeds>> get controllerSpeedList async* {
+   yield await getSpeeds();
   }
 
   void httpPost(String body) async {

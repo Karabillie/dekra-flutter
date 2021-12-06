@@ -8,6 +8,7 @@ class HttpService {
   String url = "http://localhost:3000/";
   final StreamController<List<Speeds>> _speedController = StreamController<List<Speeds>>();
   Stream<List<Speeds>> get speedController => _speedController.stream;
+  var speedSettings;
 
   Future<Settings> getSpeedsSettings() async {
     var response = await http.get(Uri.parse(url + 'time'));
@@ -15,6 +16,7 @@ class HttpService {
       // If the server did return a 200 OK response,
       var decodedData = Measurements.fromJson(jsonDecode(response.body));
       var settings = decodedData.settings;
+      speedSettings = settings;
       return settings;
     } else {
       // If the server did not return a 200 OK response,
@@ -28,6 +30,7 @@ class HttpService {
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       var speedObjsJson = jsonDecode(response.body)['speeds'] as List;
+      getSpeedsSettings();
       List<Speeds> speedsObjs =
           speedObjsJson.map((speedJson) => Speeds.fromJson(speedJson)).toList();
       return speedsObjs;
@@ -50,7 +53,6 @@ class HttpService {
         body: body);
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
-      print(response.body);
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.

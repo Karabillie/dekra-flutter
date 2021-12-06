@@ -1,13 +1,16 @@
+import 'dart:math';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/subscriber_chart.dart';
 import 'package:flutter_complete_guide/speeds_chart.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 import 'database.dart';
 import 'http-requests.dart';
 
 class Speeds {
-  double date = 0;
+  String unit = '';
+  int date = 0;
   double time = 0;
   int dir = 0;
   int edge = 0;
@@ -15,12 +18,13 @@ class Speeds {
   int mode = 0;
   double speed = 0;
 
-  Speeds(this.date, this.time, this.dir, this.edge, this.calibration, this.mode,
+  Speeds(this.unit, this.date, this.time, this.dir, this.edge, this.calibration, this.mode,
       this.speed);
 
   factory Speeds.fromJson(dynamic json) {
     return Speeds(
-        json['date'] as double,
+        json['unit'] as String,
+        json['date'] as int,
         json['time'] as double,
         json['dir'] as int,
         json['edge'] as int,
@@ -43,6 +47,23 @@ class SpeedsPage extends State<SpeedsWidget> {
   Map<String, SpeedChart> speedValues = {};
   var idCount = 0;
 
+  double formatSpeed(Speeds speedItem, String unit) {
+    var speed = speedItem.speed;
+    if (unit == 'm/s') {
+      speed = speedItem.speed  / 3.6;
+    }
+    num mod = pow(10.0, 2);
+    return ((speed * mod).round().toDouble() / mod);
+  }
+
+  String formatDate(int speedDate) {
+    var date = new DateTime.fromMicrosecondsSinceEpoch(speedDate * 1000);
+    var formattedDate = DateFormat(
+            'MM/dd/yyyy, HH:mm:ss', Localizations.localeOf(context).toString())
+        .format(date);
+    return formattedDate;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,12 +86,12 @@ class SpeedsPage extends State<SpeedsWidget> {
                       idCount.toString(),
                       () => SpeedChart(
                           idCount.toString(),
-                          speedsSnapshot[i].speed,
+                          formatSpeed(speedsSnapshot[i]),
                           charts.ColorUtil.fromDartColor(Colors.green)));
                   idCount = idCount + 1;
-                  ;
                 }
               }
+
               return Container(
                 width: MediaQuery.of(context).size.width,
                 alignment: Alignment.center,
@@ -82,20 +103,30 @@ class SpeedsPage extends State<SpeedsWidget> {
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         alignment: Alignment.center,
-                        child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: speeds?.length,
-                            padding: const EdgeInsets.all(20.0),
-                            itemBuilder: (BuildContext context, int index) {
-                              Speeds _speedItem = speeds[index];
-                              return Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: ListTile(
-                                    title: Text('${_speedItem.date}'),
-                                    subtitle: Text('${_speedItem.speed}')),
-                              );
-                            }),
+                        child: ListView.separated(
+                          reverse: true,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: speeds?.length,
+                          padding: const EdgeInsets.all(20.0),
+                          itemBuilder: (BuildContext context, int index) {
+                            Speeds _speedItem = speeds[index];
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: ListTile(
+                                  leading: Text(
+                                    '${index + 1}.',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  title: Text('${formatDate(_speedItem.date)}'),
+                                  subtitle: Text('${formatSpeed(_speedItem, httpService.speedSettings.unit)} ${httpService.speedSettings.unit}')),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return Divider();
+                          },
+                        ),
                       ),
                     ),
                     Expanded(

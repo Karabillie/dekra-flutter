@@ -26,7 +26,7 @@ class SettingsWidget extends StatefulWidget {
   SettingsPage createState() => SettingsPage();
 }
 
-class SettingsPage extends State<SettingsWidget> {
+class SettingsPage extends State<SettingsWidget> with AutomaticKeepAliveClientMixin<SettingsWidget> {
   final HttpService httpService = HttpService();
 
   final addressController = TextEditingController(text: 'http://localhost:3000/');
@@ -443,4 +443,7 @@ class SettingsPage extends State<SettingsWidget> {
           },
         ));
   }
+
+  @override
+bool get wantKeepAlive => true;
 }

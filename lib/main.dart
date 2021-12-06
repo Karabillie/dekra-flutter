@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/settings.dart';
 import 'package:flutter_complete_guide/speeds.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized(); //all widgets are rendered here
+  Hive.initFlutter();
   runApp(MyApp());
 }
 

@@ -37,6 +37,9 @@ class SettingsPage extends State<SettingsWidget> {
           future: httpService.getSpeedsSettings(),
           builder: (BuildContext context, AsyncSnapshot<Settings> snapshot) {
             Settings settings = snapshot.data;
+            if (settings == null) {
+              return CircularProgressIndicator();
+            }
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -122,7 +125,7 @@ class SettingsPage extends State<SettingsWidget> {
                               'Geschwindigkeit',
                               style: TextStyle(color: Colors.white),
                             ),
-                            enabled: settings.mode == 0,
+                            enabled: settings?.mode == 0,
                             leading: Radio<int>(
                               overlayColor: MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
@@ -130,7 +133,7 @@ class SettingsPage extends State<SettingsWidget> {
                                   (states) => Colors.white),
                               activeColor: Colors.white,
                               value: 0,
-                              groupValue: settings.mode,
+                              groupValue: settings?.mode,
                               onChanged: (int value) {
                                 setState(() {
                                   httpService.updateMode(value);
@@ -151,7 +154,7 @@ class SettingsPage extends State<SettingsWidget> {
                               'Rundenzeit',
                               style: TextStyle(color: Colors.white),
                             ),
-                            enabled: settings.mode == 1,
+                            enabled: settings?.mode == 1,
                             leading: Radio<int>(
                               overlayColor: MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
@@ -159,7 +162,7 @@ class SettingsPage extends State<SettingsWidget> {
                                   (states) => Colors.white),
                               activeColor: Colors.white,
                               value: 1,
-                              groupValue: settings.mode,
+                              groupValue: settings?.mode,
                               onChanged: (int value) {
                                 setState(() {
                                   httpService.updateMode(value);
@@ -195,7 +198,7 @@ class SettingsPage extends State<SettingsWidget> {
                               'S1->S2',
                               style: TextStyle(color: Colors.white),
                             ),
-                            enabled: settings.dir == 0,
+                            enabled: settings?.dir == 0,
                             leading: Radio<double>(
                               overlayColor: MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
@@ -203,7 +206,7 @@ class SettingsPage extends State<SettingsWidget> {
                                   (states) => Colors.white),
                               activeColor: Colors.white,
                               value: 0,
-                              groupValue: settings.dir,
+                              groupValue: settings?.dir,
                               onChanged: (double value) {
                                 setState(() {
                                   httpService.updateDirection(value);
@@ -224,7 +227,7 @@ class SettingsPage extends State<SettingsWidget> {
                               'S2->S1',
                               style: TextStyle(color: Colors.white),
                             ),
-                            enabled: settings.dir == 1,
+                            enabled: settings?.dir == 1,
                             leading: Radio<double>(
                               overlayColor: MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
@@ -232,7 +235,7 @@ class SettingsPage extends State<SettingsWidget> {
                                   (states) => Colors.white),
                               activeColor: Colors.white,
                               value: 1,
-                              groupValue: settings.dir,
+                              groupValue: settings?.dir,
                               onChanged: (double value) {
                                 setState(() {
                                   httpService.updateDirection(value);
@@ -284,7 +287,7 @@ class SettingsPage extends State<SettingsWidget> {
                               'HIGH',
                               style: TextStyle(color: Colors.white),
                             ),
-                            enabled: settings.edge == 0,
+                            enabled: settings?.edge == 0,
                             leading: Radio<int>(
                               overlayColor: MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
@@ -292,7 +295,7 @@ class SettingsPage extends State<SettingsWidget> {
                                   (states) => Colors.white),
                               activeColor: Colors.white,
                               value: 0,
-                              groupValue: settings.edge,
+                              groupValue: settings?.edge,
                               onChanged: (int value) {
                                 setState(() {
                                   httpService.updateEdge(value);
@@ -313,7 +316,7 @@ class SettingsPage extends State<SettingsWidget> {
                               'LOW',
                               style: TextStyle(color: Colors.white),
                             ),
-                            enabled: settings.edge == 1,
+                            enabled: settings?.edge == 1,
                             leading: Radio<int>(
                               overlayColor: MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
@@ -321,7 +324,7 @@ class SettingsPage extends State<SettingsWidget> {
                                   (states) => Colors.white),
                               activeColor: Colors.white,
                               value: 1,
-                              groupValue: settings.edge,
+                              groupValue: settings?.edge,
                               onChanged: (int value) {
                                 setState(() {
                                   httpService.updateEdge(value);
@@ -357,7 +360,7 @@ class SettingsPage extends State<SettingsWidget> {
                               'km/h',
                               style: TextStyle(color: Colors.white),
                             ),
-                            enabled: settings.unit == 'km/h',
+                            enabled: settings?.unit == 'km/h',
                             leading: Radio<String>(
                               overlayColor: MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
@@ -365,10 +368,10 @@ class SettingsPage extends State<SettingsWidget> {
                                   (states) => Colors.white),
                               activeColor: Colors.white,
                               value: 'km/h',
-                              groupValue: settings.unit,
+                              groupValue: settings?.unit,
                               onChanged: (String value) {
                                 setState(() {
-                                  settings.unit = value;
+                                  settings?.unit = value;
                                   httpService.updateUnit(value);
                                 });
                               },
@@ -387,7 +390,7 @@ class SettingsPage extends State<SettingsWidget> {
                               'm/s',
                               style: TextStyle(color: Colors.white),
                             ),
-                            enabled: settings.unit == 'm/s',
+                            enabled: settings?.unit == 'm/s',
                             leading: Radio<String>(
                               overlayColor: MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
@@ -395,10 +398,10 @@ class SettingsPage extends State<SettingsWidget> {
                                   (states) => Colors.white),
                               activeColor: Colors.white,
                               value: 'm/s',
-                              groupValue: settings.unit,
+                              groupValue: settings?.unit,
                               onChanged: (String value) {
                                 setState(() {
-                                  settings.unit = value;
+                                  settings?.unit = value;
                                   httpService.updateUnit(value);
                                 });
                               },

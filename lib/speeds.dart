@@ -50,7 +50,10 @@ class SpeedsPage extends State<SpeedsWidget> {
                 .asyncMap((event) => httpService.getSpeeds()),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               List<Speeds> speedsSnapshot = snapshot.data;
-              databaseService.createDatabase();
+              // databaseService.createDatabase();
+              if (snapshot.data == null) {
+                return CircularProgressIndicator();
+              }
               if (snapshot.data != []) {
                 for (var i = 0; i < speedsSnapshot?.length; i++) {
                   speeds.add(speedsSnapshot[i]);
@@ -63,9 +66,7 @@ class SpeedsPage extends State<SpeedsWidget> {
 
               print('speedValues');
               print(speedValues);
-              if (speedValues == null) {
-                return CircularProgressIndicator();
-              }
+              
               return Container(
                 width: MediaQuery.of(context).size.width,
                 alignment: Alignment.center,

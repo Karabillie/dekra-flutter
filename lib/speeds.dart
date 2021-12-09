@@ -1,20 +1,36 @@
 import 'dart:math';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/database.dart';
 import 'package:flutter_complete_guide/subscriber_chart.dart';
 import 'package:flutter_complete_guide/speeds_chart.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'http-requests.dart';
+part 'speeds.g.dart';
 
+@HiveType(typeId: 1)
 class Speeds {
+  @HiveField(0)
   int date = 0;
+
+  @HiveField(1)
   double time = 0;
+
+  @HiveField(2)
   int dir = 0;
+
+  @HiveField(3)
   int edge = 0;
+
+  @HiveField(4)
   int calibration = 0;
+
+  @HiveField(5)
   int mode = 0;
+
+  @HiveField(6)
   double speed = 0;
 
   Speeds(this.date, this.time, this.dir, this.edge, this.calibration, this.mode,
@@ -53,12 +69,18 @@ class SpeedsWidget extends StatefulWidget {
 class SpeedsPage extends State<SpeedsWidget>
     with AutomaticKeepAliveClientMixin<SpeedsWidget> {
   final HttpService httpService = HttpService();
+  final DatabaseService dbService = DatabaseService();
   List<Speeds> speeds = [];
   Map<String, SpeedChart> speedValues = {};
   var idCount = 0;
   var unitSpeed;
   var speedBox;
   var speedText = 0.0;
+  @override
+  void initState() {
+    super.initState();
+    dbService.createDatabase();
+  }
 
   double formatSpeed(Speeds speedItem, String unit) {
     var speed = speedItem.speed;
@@ -79,7 +101,6 @@ class SpeedsPage extends State<SpeedsWidget>
 
   @override
   Widget build(BuildContext context) {
-    speedBox = Hive.openBox('database1');
     return Scaffold(
         body: StreamBuilder(
             stream: Stream.periodic(Duration(seconds: 2))
@@ -97,8 +118,7 @@ class SpeedsPage extends State<SpeedsWidget>
                     speedValues = {};
                   }
                   speeds.add(speedsSnapshot[i]);
-                  print(speedBox);
-                  // speedBox.put(speedsSnapshot[i].speed, speedsSnapshot[i].date, speedsSnapshot[i].dir, speedsSnapshot[i].edge, speedsSnapshot[i].mode, speedsSnapshot[i].calibration);
+                  dbService.insertIntoDatabase(speedsSnapshot[i]);
                   speedValues.putIfAbsent(
                       idCount.toString(),
                       () => SpeedChart(
@@ -126,10 +146,15 @@ class SpeedsPage extends State<SpeedsWidget>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              child: Text('Geschwindigkeit: ', style: TextStyle(fontSize: 25)),
+                              child: Text('Geschwindigkeit: ',
+                                  style: TextStyle(fontSize: 25)),
                             ),
                             Container(
-                              child: Text('${speedText} ${unitSpeed}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 35)),
+                              child: Text('${speedText} ${unitSpeed}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                      fontSize: 35)),
                             ),
                           ],
                         )),

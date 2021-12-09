@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized(); //all widgets are rendered here
   Hive.initFlutter();
+  Hive.registerAdapter(SpeedsAdapter());
   runApp(MyApp());
 }
 

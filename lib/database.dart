@@ -1,25 +1,16 @@
 import 'package:flutter_complete_guide/speeds.dart';
-import 'package:sembast_web/sembast_web.dart';
-import 'package:sembast/sembast.dart';
+import 'package:hive/hive.dart';
 
 class DatabaseService {
-  var db;
+  var speedBoxdb;
   var store;
   var factory;
 
   void createDatabase() async {
-    // Declare our store (records are mapd, ids are ints)
-    store = intMapStoreFactory.store();
-    factory = databaseFactoryWeb;
-
-    // Open the database
-    db = await factory.openDatabase('Lichtschranke-db');
+    speedBoxdb = await Hive.openBox('Lichtschranke-db');
   }
 
-  void insertIntoDatabase(List<Speeds> speed) async {
-    print(store);
-    var speedMap = Map.fromIterable(speed, key: (e) => e.date, value: (e) => e.speed);
-    print(speedMap);
-    await store.add(db, speedMap);
+  void insertIntoDatabase(Speeds speedItem) async {
+    speedBoxdb.add(speedItem);
   }
 }
